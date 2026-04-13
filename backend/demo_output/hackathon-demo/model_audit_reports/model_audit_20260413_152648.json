@@ -1,0 +1,246 @@
+{
+  "overall_risk_score": 0.4,
+  "executive_summary": "Model audit completed with MEDIUM fairness risk (score: 0.4). Global accuracy: 1.0, F1-score: 1.0. 4 fairness checks failed across 10 evaluated metrics, generating 4 findings.",
+  "metrics": [
+    {
+      "sensitive_attribute": "gender",
+      "metric_name": "demographic_parity",
+      "value": 0.3525,
+      "threshold": 0.1,
+      "passed": false,
+      "details": {
+        "Male": 0.4167,
+        "Female": 0.7692
+      }
+    },
+    {
+      "sensitive_attribute": "gender",
+      "metric_name": "disparate_impact",
+      "value": 0.5417,
+      "threshold": 0.8,
+      "passed": false,
+      "details": {
+        "Male": 0.4167,
+        "Female": 0.7692
+      }
+    },
+    {
+      "sensitive_attribute": "gender",
+      "metric_name": "equal_opportunity",
+      "value": 0.0,
+      "threshold": 0.1,
+      "passed": true,
+      "details": {
+        "Male": 1.0,
+        "Female": 1.0
+      }
+    },
+    {
+      "sensitive_attribute": "gender",
+      "metric_name": "false_positive_rate_parity",
+      "value": 0.0,
+      "threshold": 0.1,
+      "passed": true,
+      "details": {
+        "Male": 0.0,
+        "Female": 0.0
+      }
+    },
+    {
+      "sensitive_attribute": "gender",
+      "metric_name": "false_negative_rate_parity",
+      "value": 0.0,
+      "threshold": 0.1,
+      "passed": true,
+      "details": {
+        "Male": 0.0,
+        "Female": 0.0
+      }
+    },
+    {
+      "sensitive_attribute": "race",
+      "metric_name": "demographic_parity",
+      "value": 0.3525,
+      "threshold": 0.1,
+      "passed": false,
+      "details": {
+        "GroupA": 0.4167,
+        "GroupB": 0.7692
+      }
+    },
+    {
+      "sensitive_attribute": "race",
+      "metric_name": "disparate_impact",
+      "value": 0.5417,
+      "threshold": 0.8,
+      "passed": false,
+      "details": {
+        "GroupA": 0.4167,
+        "GroupB": 0.7692
+      }
+    },
+    {
+      "sensitive_attribute": "race",
+      "metric_name": "equal_opportunity",
+      "value": 0.0,
+      "threshold": 0.1,
+      "passed": true,
+      "details": {
+        "GroupA": 1.0,
+        "GroupB": 1.0
+      }
+    },
+    {
+      "sensitive_attribute": "race",
+      "metric_name": "false_positive_rate_parity",
+      "value": 0.0,
+      "threshold": 0.1,
+      "passed": true,
+      "details": {
+        "GroupA": 0.0,
+        "GroupB": 0.0
+      }
+    },
+    {
+      "sensitive_attribute": "race",
+      "metric_name": "false_negative_rate_parity",
+      "value": 0.0,
+      "threshold": 0.1,
+      "passed": true,
+      "details": {
+        "GroupA": 0.0,
+        "GroupB": 0.0
+      }
+    }
+  ],
+  "findings": [
+    {
+      "finding_type": "demographic_parity",
+      "severity": "critical",
+      "attribute": "gender",
+      "description": "Demographic Parity failed for gender with value 0.3525 against threshold 0.1.",
+      "recommendation": "Review subgroup outcomes, retrain model if needed, inspect proxy features, and consider threshold calibration.",
+      "raw_data": {
+        "Male": 0.4167,
+        "Female": 0.7692
+      }
+    },
+    {
+      "finding_type": "disparate_impact",
+      "severity": "high",
+      "attribute": "gender",
+      "description": "Disparate Impact failed for gender with value 0.5417 against threshold 0.8.",
+      "recommendation": "Review subgroup outcomes, retrain model if needed, inspect proxy features, and consider threshold calibration.",
+      "raw_data": {
+        "Male": 0.4167,
+        "Female": 0.7692
+      }
+    },
+    {
+      "finding_type": "demographic_parity",
+      "severity": "critical",
+      "attribute": "race",
+      "description": "Demographic Parity failed for race with value 0.3525 against threshold 0.1.",
+      "recommendation": "Review subgroup outcomes, retrain model if needed, inspect proxy features, and consider threshold calibration.",
+      "raw_data": {
+        "GroupA": 0.4167,
+        "GroupB": 0.7692
+      }
+    },
+    {
+      "finding_type": "disparate_impact",
+      "severity": "high",
+      "attribute": "race",
+      "description": "Disparate Impact failed for race with value 0.5417 against threshold 0.8.",
+      "recommendation": "Review subgroup outcomes, retrain model if needed, inspect proxy features, and consider threshold calibration.",
+      "raw_data": {
+        "GroupA": 0.4167,
+        "GroupB": 0.7692
+      }
+    }
+  ],
+  "subgroup_performance": [
+    {
+      "sensitive_attribute": "gender",
+      "group": "Male",
+      "n_samples": 12,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "fpr": 0.0,
+      "fnr": 0.0
+    },
+    {
+      "sensitive_attribute": "gender",
+      "group": "Female",
+      "n_samples": 13,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "fpr": 0.0,
+      "fnr": 0.0
+    },
+    {
+      "sensitive_attribute": "race",
+      "group": "GroupA",
+      "n_samples": 12,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "fpr": 0.0,
+      "fnr": 0.0
+    },
+    {
+      "sensitive_attribute": "race",
+      "group": "GroupB",
+      "n_samples": 13,
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "fpr": 0.0,
+      "fnr": 0.0
+    }
+  ],
+  "model_meta": {
+    "model_type": "RandomForestClassifier",
+    "has_predict": true,
+    "has_predict_proba": true,
+    "feature_names_in": [
+      "age",
+      "income",
+      "credit_score"
+    ],
+    "n_features_in": 3,
+    "classes": [
+      "0",
+      "1"
+    ],
+    "n_test_samples": 25,
+    "positive_label": 1,
+    "global_accuracy": 1.0,
+    "global_precision": 1.0,
+    "global_recall": 1.0,
+    "global_f1": 1.0,
+    "global_roc_auc": 1.0,
+    "expected_features": [
+      "age",
+      "income",
+      "credit_score"
+    ]
+  },
+  "performance": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "roc_auc": 1.0
+  },
+  "report_urls": {
+    "pdf": null,
+    "json": null
+  }
+}

@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="./src/style.css" />
+  <link rel="icon" href="data:,">
+  <title>EquiLense AI — Decision Auditor</title>
+
+  <script src="chart.umd.js"></script>
+
+  <style>
+    :root {
+      --bg: #0a0f1f;
+      --bg-2: #0d1328;
+      --panel: rgba(17, 24, 39, 0.72);
+      --panel-2: rgba(255,255,255,0.04);
+      --panel-3: rgba(255,255,255,0.06);
+      --text: #eef2ff;
+      --muted: #9aa6d1;
+      --line: rgba(255,255,255,0.08);
+      --primary: #6d7cff;
+      --accent: #06b6d4;
+      --success: #17c964;
+      --warning: #f5a524;
+      --danger: #f31260;
+      --radius: 22px;
+      --radius-sm: 14px;
+      --shadow: 0 18px 50px rgba(0,0,0,0.28);
+      --shadow-soft: 0 10px 24px rgba(0,0,0,0.18);
+      --glass: blur(18px);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(109,124,255,0.18), transparent 26%),
+        radial-gradient(circle at top right, rgba(6,182,212,0.14), transparent 24%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      background: rgba(255,255,255,0.03);
+      border-right: 1px solid var(--line);
+      padding: 28px 18px;
+      backdrop-filter: var(--glass);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .brand-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 26px;
+    }
+
+    .brand {
+      font-size: 1.7rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .brand span {
+      color: var(--primary);
+    }
+
+    .brand-sub {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.7;
+      max-width: 220px;
+    }
+
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .nav-item {
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      padding: 15px 16px;
+      border-radius: 16px;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.25s ease;
+      font-size: 0.96rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: rgba(109,124,255,0.14);
+      border-color: rgba(109,124,255,0.18);
+      color: #fff;
+      transform: translateX(2px);
+    }
+
+    .sidebar-footer {
+      margin-top: 30px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    .main {
+      padding: 30px;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 28px;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      font-size: clamp(2rem, 2vw, 2.4rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 760px;
+      line-height: 1.75;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 16px;
+      padding: 12px 18px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.22s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #8f9cff);
+      color: white;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.05);
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      opacity: 0.98;
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+      animation: fadeUp 0.35s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .grid {
+      display: grid;
+      gap: 20px;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.02));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: var(--glass);
+    }
+
+    .card-hover {
+      transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-2px);
+      border-color: rgba(109,124,255,0.18);
+      background: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.024));
+    }
+
+    .section-title {
+      font-size: 1.12rem;
+      font-weight: 900;
+      margin-bottom: 14px;
+      letter-spacing: -0.02em;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 0.94rem;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .steps {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .step {
+      padding: 11px 16px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.92rem;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: rgba(255,255,255,0.03);
+      transition: 0.22s ease;
+    }
+
+    .step.active {
+      background: rgba(109,124,255,0.16);
+      color: white;
+      border-color: rgba(109,124,255,0.35);
+      box-shadow: 0 0 0 1px rgba(109,124,255,0.12) inset;
+    }
+
+    .step.done {
+      background: rgba(23,201,100,0.14);
+      color: #b8ffd6;
+      border-color: rgba(23,201,100,0.28);
+    }
+
+    .dropzone {
+      border: 2px dashed rgba(255,255,255,0.12);
+      border-radius: 22px;
+      padding: 30px;
+      text-align: center;
+      transition: 0.25s ease;
+      background: rgba(255,255,255,0.02);
+      min-height: 270px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dropzone.drag {
+      border-color: var(--primary);
+      background: rgba(109,124,255,0.08);
+      transform: scale(1.01);
+    }
+
+    .dropzone input {
+      display: none;
+    }
+
+    .dropzone-title {
+      font-size: 1.35rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+      letter-spacing: -0.03em;
+    }
+
+    .dropzone label {
+      display: inline-block;
+      margin-top: 18px;
+      cursor: pointer;
+      padding: 13px 18px;
+      border-radius: 14px;
+      background: rgba(109,124,255,0.16);
+      color: white;
+      font-weight: 800;
+      transition: 0.22s ease;
+    }
+
+    .dropzone label:hover {
+      transform: translateY(-1px);
+      background: rgba(109,124,255,0.24);
+    }
+
+    .file-meta,
+    .muted {
+      color: var(--muted);
+      font-size: 0.93rem;
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+
+    .upload-stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .upload-block {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      transition: 0.22s ease;
+    }
+
+    .upload-block:hover {
+      border-color: rgba(109,124,255,0.18);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .upload-block label {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .upload-block input[type="file"] {
+      width: 100%;
+      color: var(--muted);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px;
+    }
+
+    .mode-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      background: rgba(6,182,212,0.12);
+      color: #9be7f5;
+      border: 1px solid rgba(6,182,212,0.2);
+      margin-bottom: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      color: white;
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    .field input:focus {
+      border-color: rgba(109,124,255,0.42);
+      box-shadow: 0 0 0 4px rgba(109,124,255,0.08);
+    }
+
+    .progress-wrap {
+      background: rgba(255,255,255,0.06);
+      border-radius: 999px;
+      overflow: hidden;
+      height: 12px;
+      margin: 18px 0 14px;
+      border: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width 0.4s ease;
+      border-radius: 999px;
+    }
+
+    .run-log {
+      margin-top: 18px;
+      background: #0a0f1f;
+      border-radius: 16px;
+      padding: 14px;
+      max-height: 220px;
+      overflow-y: auto;
+      border: 1px solid var(--line);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.88rem;
+      color: #cfd8ff;
+      line-height: 1.7;
+    }
+
+    .summary-card h3 {
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+
+    .summary-card .big {
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+      letter-spacing: -0.04em;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      border: 1px solid transparent;
+    }
+
+    .pill-pass, .pill-low {
+      background: rgba(23,201,100,0.14);
+      color: #a8f5c9;
+      border-color: rgba(23,201,100,0.22);
+    }
+
+    .pill-medium {
+      background: rgba(245,165,36,0.14);
+      color: #ffd892;
+      border-color: rgba(245,165,36,0.18);
+    }
+
+    .pill-high {
+      background: rgba(243,18,96,0.14);
+      color: #ff9bbd;
+      border-color: rgba(243,18,96,0.18);
+    }
+
+    .pill-critical, .pill-fail {
+      background: rgba(243,18,96,0.18);
+      color: #ff7aa8;
+      border-color: rgba(243,18,96,0.22);
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      padding-bottom: 4px;
+    }
+
+    .tab {
+      border: 1px solid transparent;
+      background: rgba(255,255,255,0.04);
+      color: var(--muted);
+      padding: 11px 16px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 800;
+      transition: 0.22s ease;
+    }
+
+    .tab:hover,
+    .tab.active {
+      background: rgba(109,124,255,0.14);
+      color: white;
+      border-color: rgba(109,124,255,0.16);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeUp 0.28s ease;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      min-width: 700px;
+    }
+
+    th, td {
+      padding: 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      font-size: 0.94rem;
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      font-weight: 900;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .finding {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 14px;
+      transition: 0.22s ease;
+    }
+
+    .finding:hover {
+      transform: translateY(-1px);
+      border-color: rgba(109,124,255,0.16);
+    }
+
+    .finding-hdr {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .finding-title {
+      font-size: 1rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .finding-desc, .finding-rec {
+      color: var(--muted);
+      line-height: 1.72;
+      margin-top: 8px;
+    }
+
+    .chart-card {
+      height: 340px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chart-card canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .overview-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .overview-item {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .footer-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .status-banner {
+      display: none;
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(109,124,255,0.08);
+      color: #dfe6ff;
+      font-size: 0.94rem;
+      line-height: 1.7;
+    }
+
+    .toast-wrap {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 9999;
+      max-width: 360px;
+    }
+
+    .toast {
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: rgba(17, 24, 39, 0.95);
+      backdrop-filter: blur(14px);
+      box-shadow: var(--shadow-soft);
+      color: white;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      animation: slideIn 0.25s ease;
+    }
+
+    .toast.success { border-color: rgba(23,201,100,0.22); }
+    .toast.error { border-color: rgba(243,18,96,0.22); }
+    .toast.info { border-color: rgba(6,182,212,0.22); }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @media (max-width: 1100px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .sidebar-footer {
+        display: none;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .main {
+        padding: 18px;
+      }
+
+      .sidebar {
+        padding: 18px;
+      }
+
+      .title {
+        font-size: 1.7rem;
+      }
+
+      .steps {
+        gap: 10px;
+      }
+
+      .step {
+        width: 100%;
+      }
+
+      .toolbar {
+        width: 100%;
+      }
+
+      .toolbar .btn {
+        flex: 1;
+      }
+
+      .dropzone {
+        min-height: 240px;
+        padding: 24px 18px;
+      }
+
+      .toast-wrap {
+        left: 16px;
+        right: 16px;
+        top: 16px;
+        max-width: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toast-wrap" id="toast-wrap"></div>
+
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand-wrap">
+        <div>
+          <div class="brand">Equilense <span>AI</span></div>
+          <div class="brand-sub">
+            Enterprise-grade fairness auditing for datasets and machine learning models.
+          </div>
+        </div>
+
+        <div class="nav">
+          <button class="nav-item active" onclick="showView('audit', this)">⚖️ Audit Workspace</button>
+          <button class="nav-item" onclick="showView('dashboard', this)">📊 Dashboard</button>
+          <button class="nav-item" onclick="showView('reports', this)">📄 Reports</button>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <strong style="display:block; margin-bottom:8px; color:white;">System Note</strong>
+        Run Layer 1 for dataset fairness and Layer 2 for model inspection.  
+        Same backend. Less chaos. Better decisions.
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <div class="title">Decision Auditor</div>
+          <div class="subtitle">
+            Inspect datasets and machine learning models for fairness, subgroup risk, and operational bias.
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <button class="btn btn-secondary" onclick="resetDemo()">Reset</button>
+          <button id="run-btn" class="btn btn-primary" onclick="runAudit()">Run Audit</button>
+        </div>
+      </div>
+
+      <!-- ========================= AUDIT VIEW ========================= -->
+      <section id="view-audit" class="view active">
+        <div class="steps">
+          <div id="step1" class="step active">1. Upload</div>
+          <div id="step2" class="step idle">2. Configure</div>
+          <div id="step3" class="step idle">3. Run</div>
+          <div id="step4" class="step idle">4. Results</div>
+        </div>
+
+        <div id="upload-section" class="grid grid-2">
+          <div class="card card-hover">
+            <div class="mode-chip">Layer 1 • Dataset Fairness Audit</div>
+            <div class="section-title">Upload a dataset for fairness inspection</div>
+            <div class="section-sub">
+              Analyze subgroup disparities, fairness metrics, and bias risk directly from your CSV dataset.
+            </div>
+
+            <div id="dropzone" class="dropzone">
+              <div class="dropzone-title">Drop your CSV here</div>
+              <div class="muted">Or browse a file to begin dataset audit</div>
+
+              <label for="file-input">Choose CSV File</label>
+              <input id="file-input" type="file" accept=".csv" />
+
+              <div id="uploaded-file-name" class="file-meta">No file selected</div>
+              <div id="dataset-meta" class="file-meta">Upload a CSV to begin</div>
+            </div>
+          </div>
+
+          <div class="card card-hover">
+            <div class="mode-chip">Layer 2 • Model Audit</div>
+            <div class="section-title">Upload model artifacts for inspection</div>
+            <div class="section-sub">
+              Audit trained ML models using evaluation data for subgroup performance and fairness violations.
+            </div>
+
+            <div class="upload-stack">
+              <div class="upload-block">
+                <label>Upload Model File</label>
+                <input id="model-file-input" type="file" accept=".pkl,.joblib,.onnx" />
+                <div id="uploaded-model-name" class="file-meta">No model selected</div>
+              </div>
+
+              <div class="upload-block">
+                <label>Upload Evaluation CSV</label>
+                <input id="eval-file-input" type="file" accept=".csv" />
+                <div id="uploaded-eval-name" class="file-meta">No dataset selected</div>
+              </div>
+
+              <div class="muted">
+                Supported model formats: <strong style="color:white;">.pkl</strong>, <strong style="color:white;">.joblib</strong>, <strong style="color:white;">.onnx</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="config-section" class="card" style="margin-top:20px; display:none;">
+          <div class="section-title">Audit Configuration</div>
+          <div class="section-sub">
+            Configure your target and sensitive attributes before running the audit.
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label>Target Column</label>
+              <input id="target-column" type="text" value="approved" />
+            </div>
+
+            <div class="field">
+              <label>Sensitive Columns</label>
+              <input id="sensitive-columns" type="text" value="gender,race" />
+            </div>
+
+            <div class="field">
+              <label>Prediction Column (Optional)</label>
+              <input id="y-pred-column" type="text" placeholder="prediction" />
+            </div>
+
+            <div class="field">
+              <label>Positive Label</label>
+              <input id="positive-label" type="text" value="1" />
+            </div>
+          </div>
+
+          <div id="mode-banner" class="status-banner" style="display:block;">
+            Audit mode will automatically switch based on the files you upload.
+          </div>
+        </div>
+
+        <div id="running-section" class="card" style="margin-top:20px; display:none;">
+          <div class="section-title">Audit Progress</div>
+          <div id="run-status" class="muted">Initializing audit engine...</div>
+
+          <div class="progress-wrap">
+            <div id="progress-bar" class="progress-bar"></div>
+          </div>
+
+          <div id="run-log" class="run-log"></div>
+        </div>
+
+        <div id="results-section" style="display:none; margin-top:20px;">
+          <div class="grid grid-4">
+            <div class="card summary-card card-hover">
+              <h3>Risk Score</h3>
+              <div id="risk-score-val" class="big">0.00</div>
+              <span id="risk-score-label" class="pill pill-low">LOW</span>
+            </div>
+
+            <div class="card summary-card card-hover">
+              <h3>Fairness Checks</h3>
+              <div class="big"><span id="metrics-failed">0</span> / <span id="metrics-total">0</span></div>
+              <div id="metrics-summary" class="muted">No metrics available</div>
+            </div>
+
+            <div class="card summary-card card-hover">
+              <h3>Bias Findings</h3>
+              <div id="findings-count" class="big">0</div>
+              <div class="muted">Potential issues flagged</div>
+            </div>
+
+            <div class="card summary-card card-hover">
+              <h3>Disparate Impact</h3>
+              <div id="di-score" class="big">N/A</div>
+              <div id="di-summary" class="muted">No disparate impact value available</div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:20px;">
+            <div class="tabs">
+              <button class="tab active" onclick="switchTab('metrics', this)">Metrics</button>
+              <button class="tab" onclick="switchTab('findings', this)">Findings</button>
+              <button class="tab" onclick="switchTab('groups', this)">Groups</button>
+              <button class="tab" onclick="switchTab('summary', this)">Summary</button>
+            </div>
+
+            <div id="tab-metrics" class="tab-content" style="display:block;">
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Attribute</th>
+                      <th>Metric</th>
+                      <th>Value</th>
+                      <th>Threshold</th>
+                      <th>Status</th>
+                      <th>Severity</th>
+                    </tr>
+                  </thead>
+                  <tbody id="metrics-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div id="tab-findings" class="tab-content">
+              <div id="findings-list"></div>
+            </div>
+
+            <div id="tab-groups" class="tab-content">
+              <div class="grid grid-2">
+                <div class="card chart-card">
+                  <canvas id="chartRace"></canvas>
+                </div>
+                <div class="card chart-card">
+                  <canvas id="chartGender"></canvas>
+                </div>
+              </div>
+
+              <div class="card" style="margin-top:20px;">
+                <div class="section-title">Group Breakdown</div>
+                <div class="table-wrap">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Group</th>
+                        <th>Attribute</th>
+                        <th>Approval Rate</th>
+                      </tr>
+                    </thead>
+                    <tbody id="group-breakdown-body"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div id="tab-summary" class="tab-content">
+              <div id="executive-summary-box" class="card"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================= DASHBOARD VIEW ========================= -->
+      <section id="view-dashboard" class="view">
+        <div class="grid grid-2">
+          <div class="card chart-card">
+            <div class="section-title">Risk Trend</div>
+            <canvas id="chartTrend"></canvas>
+          </div>
+
+          <div class="card">
+            <div class="section-title">Audit Overview</div>
+            <p class="muted" style="line-height:1.9;">
+              This dashboard provides a high-level view of fairness risk trends and recent audit posture across your analysis runs.
+            </p>
+
+            <div class="overview-list">
+              <div class="overview-item">
+                <span class="muted">Latest Audit Mode</span>
+                <strong id="dashboard-mode">Dataset Audit</strong>
+              </div>
+              <div class="overview-item">
+                <span class="muted">Latest Risk Level</span>
+                <strong id="dashboard-risk">LOW</strong>
+              </div>
+              <div class="overview-item">
+                <span class="muted">Findings Flagged</span>
+                <strong id="dashboard-findings">0</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================= REPORTS VIEW ========================= -->
+      <section id="view-reports" class="view">
+        <div class="card">
+          <div class="section-title">Generated Reports</div>
+          <p id="report-meta" class="muted">Report links will appear here after an audit run.</p>
+
+          <div style="display:flex; gap:12px; margin-top:18px; flex-wrap:wrap;">
+            <a id="download-pdf-btn" class="btn btn-primary" href="#" target="_blank">Download PDF</a>
+            <a id="download-json-btn" class="btn btn-secondary" href="#" target="_blank">Download JSON</a>
+          </div>
+
+          <div class="footer-note">
+            PDF is for leadership. JSON is for developers. One reads summaries, the other reads consequences.
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./src/app.js"></script>
+</body>
+</html>

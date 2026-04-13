@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+.env
+.git/
+.gitignore
+demo_output/
+reports/
+uploads/
+.pytest_cache/
+.mypy_cache/
