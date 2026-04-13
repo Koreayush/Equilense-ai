@@ -69,6 +69,16 @@ PostgreSQL (Storage)
 
 ---
 
+🐳 One-Click Demo 
+🚀 Run Entire System
+'''bash
+git clone https://github.com/Koreayush/Equilense_AI.git
+cd Equilense_AI
+chmod +x run-demo.sh
+./run-demo.sh
+'''
+
+
 ## 🐳 One-Command Setup (Docker)
 
 ### 🔥 Run the entire system:
