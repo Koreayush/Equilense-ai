@@ -76,8 +76,8 @@ PostgreSQL (Storage)
 ```bash
 git clone https://github.com/Koreayush/Equilense_AI.git
 cd Equilense_AI
-chmod +x run-demo.sh
-./run-demo.sh
+bash run-demo.sh
+bash run-demo.sh
 ```
 
 
