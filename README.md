@@ -16,6 +16,9 @@ It helps you answer critical questions like:
 
 ---
 
+## Dashboard
+![image alt](https://github.com/Koreayush/Equilense_AI/blob/42ad0badd4042fd5e377431365c29c126169aed3/Dashboard.png)
+
 ## ⚡ Key Features
 
 ### 🔍 Layer 1 — Data Fairness Audit
