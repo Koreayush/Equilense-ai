@@ -42,7 +42,7 @@ It helps you answer critical questions like:
     * FPR / FNR gaps
 
 ## Features 
-![image alt](https://github.com/Koreayush/Equilense_AI/blob/6e22dd4dd393a3ce08ad0e22e64a1810ad7a3e68/featues.jpeg)
+
 
 ### 📊 Smart Reporting
 
