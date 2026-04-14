@@ -58,6 +58,12 @@ It helps you answer critical questions like:
 * Background job execution
 * Scalable architecture
 
+## 📄 Sample Output
+
+📊 Want to see real bias detection report?
+
+👉 **[Click here to view the full audit report](model_audit_report.pdf)**
+
 ---
 
 ## 🏗️ System Architecture
