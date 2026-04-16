@@ -55,8 +55,17 @@ REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
 logger.info(f"Reports directory mounted at: {REPORTS_DIR}")
 
+
+
 # Mount reports as static downloadable files
 app.mount("/reports", StaticFiles(directory=str(REPORTS_DIR)), name="reports")
+
+# FRONTEND (STATIC UI)
+FRONTEND_DIR = BASE_DIR / "app" / "static"
+
+app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")
+
+
 
 # ─────────────────────────────────────────────────────────────
 # API ROUTERS
@@ -77,18 +86,7 @@ def health():
     }
 
 
+from fastapi.responses import FileResponse
 @app.get("/")
-def root():
-    return {
-        "message": f"Welcome to {settings.APP_NAME}",
-        "description": "AI Fairness Auditing & Bias Detection API",
-        "docs": "/docs",
-        "redoc": "/redoc",
-        "health": "/health",
-        "available_routes": {
-            "layer1_data_audit": "/api/v1/audit/run",
-            "layer2_model_audit": "/api/v1/model_audit/run",
-            "full_pipeline_audit": "/api/v1/audit/run-full",
-            "reports_root": "/reports/",
-        },
-    }
+def serve_ui():
+    return FileResponse(str(FRONTEND_DIR / "index.html"))
