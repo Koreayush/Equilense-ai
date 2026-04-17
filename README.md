@@ -106,11 +106,9 @@ docker-compose up --build
 
 ## 🌐 Access the App
 
-| Service     | URL                        |
-| ----------- | -------------------------- |
-| Frontend    | http://localhost:3000      |
-| Backend API | http://localhost:8000      |
-| API Docs    | http://localhost:8000/docs |
+To open the app 
+
+app = https://equilense-ai.onrender.com
 
 ---
 
@@ -202,7 +200,7 @@ docker-compose up --build
 ```
 
 Then open:
-👉 http://localhost:3000
+👉 https://equilense-ai.onrender.com
 
 ---
 
