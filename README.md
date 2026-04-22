@@ -28,6 +28,26 @@ Deployed on AWS ECS (Fargate) with containerized frontend & backend.
 
 ---
 
+✨ Features
+
+Feature	Status
+Bias Detection	✅
+Fairness Metrics	✅
+PDF Reports	✅
+REST API	✅
+Dockerized	✅
+AWS Deployment	✅
+
+🧠 Key Highlights
+
+📊 Multi-layer auditing (Data + Model)
+⚖️ Industry-standard fairness metrics
+📄 Automated compliance-ready reports
+⚡ Production-ready architecture
+☁️ Deployed on AWS ECS
+
+---
+
 ## 🏗️ System Architecture
 
 EquiLens AI follows a modern microservices-inspired architecture designed for scalability and asynchronous processing.
