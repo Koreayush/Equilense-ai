@@ -1,0 +1,326 @@
+{
+  "overall_risk_score": 0.87,
+  "executive_summary": "Overall Fairness Risk: CRITICAL (score: 0.87). 8 of 10 fairness metrics failed. 16 findings detected (2 critical, 8 high, 1 low, 5 medium).",
+  "metrics": [
+    {
+      "sensitive_attribute": "gender",
+      "metric_name": "demographic_parity",
+      "value": 0.5705,
+      "threshold": 0.1,
+      "passed": false,
+      "details": {
+        "Female": 0.8205,
+        "Male": 0.7959,
+        "Non-binary": 0.25
+      }
+    },
+    {
+      "sensitive_attribute": "gender",
+      "metric_name": "disparate_impact",
+      "value": 0.3047,
+      "threshold": 0.8,
+      "passed": false,
+      "details": {
+        "Female": 0.8205,
+        "Male": 0.7959,
+        "Non-binary": 0.25
+      }
+    },
+    {
+      "sensitive_attribute": "gender",
+      "metric_name": "equal_opportunity",
+      "value": 0.2188,
+      "threshold": 0.1,
+      "passed": false,
+      "details": {
+        "Female": 0.7812,
+        "Male": 0.8718,
+        "Non-binary": 1.0
+      }
+    },
+    {
+      "sensitive_attribute": "gender",
+      "metric_name": "false_positive_rate_parity",
+      "value": 0.0,
+      "threshold": 0.1,
+      "passed": true,
+      "details": {
+        "Female": 0.0,
+        "Male": 0.0,
+        "Non-binary": 0.0
+      }
+    },
+    {
+      "sensitive_attribute": "gender",
+      "metric_name": "false_negative_rate_parity",
+      "value": 0.2188,
+      "threshold": 0.1,
+      "passed": false,
+      "details": {
+        "Female": 0.2188,
+        "Male": 0.1282,
+        "Non-binary": 0.0
+      }
+    },
+    {
+      "sensitive_attribute": "race",
+      "metric_name": "demographic_parity",
+      "value": 0.3958,
+      "threshold": 0.1,
+      "passed": false,
+      "details": {
+        "Asian": 0.5,
+        "Black": 0.4375,
+        "Hispanic": 0.8333,
+        "White": 0.8269
+      }
+    },
+    {
+      "sensitive_attribute": "race",
+      "metric_name": "disparate_impact",
+      "value": 0.525,
+      "threshold": 0.8,
+      "passed": false,
+      "details": {
+        "Asian": 0.5,
+        "Black": 0.4375,
+        "Hispanic": 0.8333,
+        "White": 0.8269
+      }
+    },
+    {
+      "sensitive_attribute": "race",
+      "metric_name": "equal_opportunity",
+      "value": 0.1857,
+      "threshold": 0.1,
+      "passed": false,
+      "details": {
+        "Asian": 0.75,
+        "Black": 0.7143,
+        "Hispanic": 0.9,
+        "White": 0.8372
+      }
+    },
+    {
+      "sensitive_attribute": "race",
+      "metric_name": "false_positive_rate_parity",
+      "value": 0.0,
+      "threshold": 0.1,
+      "passed": true,
+      "details": {
+        "Asian": 0.0,
+        "Black": 0.0,
+        "Hispanic": 0.0,
+        "White": 0.0
+      }
+    },
+    {
+      "sensitive_attribute": "race",
+      "metric_name": "false_negative_rate_parity",
+      "value": 0.1857,
+      "threshold": 0.1,
+      "passed": false,
+      "details": {
+        "Asian": 0.25,
+        "Black": 0.2857,
+        "Hispanic": 0.1,
+        "White": 0.1628
+      }
+    }
+  ],
+  "findings": [
+    {
+      "finding_type": "small_sample",
+      "severity": "medium",
+      "attribute": "gender",
+      "description": "Group 'Non-binary' in 'gender' has only 12 samples. Fairness metrics for this subgroup may be unstable.",
+      "recommendation": "Interpret subgroup fairness results with caution. Collect more representative data for under-sampled groups.",
+      "raw_data": {
+        "group": "Non-binary",
+        "count": 12
+      }
+    },
+    {
+      "finding_type": "representation",
+      "severity": "medium",
+      "attribute": "gender",
+      "description": "Group 'Non-binary' in 'gender' is underrepresented: 12 samples (24.5% of the largest group).",
+      "recommendation": "Consider collecting more data for 'Non-binary' or applying rebalancing techniques. Under-representation can reduce model quality and fairness for minority groups.",
+      "raw_data": {
+        "group": "Non-binary",
+        "count": 12,
+        "ratio": 0.2449
+      }
+    },
+    {
+      "finding_type": "label_imbalance",
+      "severity": "critical",
+      "attribute": "gender",
+      "description": "Positive outcome rates differ by 57.1% across 'gender' groups.",
+      "recommendation": "Large outcome disparities may reflect historical discrimination or biased labels. Review whether the target variable is a fair proxy for the intended real-world outcome.",
+      "raw_data": {
+        "Female": 0.8205,
+        "Male": 0.7959,
+        "Non-binary": 0.25
+      }
+    },
+    {
+      "finding_type": "demographic_parity_failure",
+      "severity": "high",
+      "attribute": "gender",
+      "description": "Demographic parity failed for 'gender'. Positive outcome rate gap is 57.1%.",
+      "recommendation": "Review decision thresholds, label generation, and subgroup representation to reduce outcome disparities.",
+      "raw_data": {
+        "Female": 0.8205,
+        "Male": 0.7959,
+        "Non-binary": 0.25
+      }
+    },
+    {
+      "finding_type": "disparate_impact_failure",
+      "severity": "high",
+      "attribute": "gender",
+      "description": "Disparate impact failed for 'gender'. Impact ratio is 0.30, below the 0.80 threshold.",
+      "recommendation": "Investigate whether one group is receiving substantially fewer positive outcomes. Review selection criteria, thresholds, and historical training data.",
+      "raw_data": {
+        "Female": 0.8205,
+        "Male": 0.7959,
+        "Non-binary": 0.25
+      }
+    },
+    {
+      "finding_type": "equal_opportunity_failure",
+      "severity": "high",
+      "attribute": "gender",
+      "description": "Equal opportunity failed for 'gender'. True positive rate gap is 21.9%.",
+      "recommendation": "The model may correctly identify positive cases for some groups more than others. Review training balance, feature quality, and model thresholds.",
+      "raw_data": {
+        "Female": 0.7812,
+        "Male": 0.8718,
+        "Non-binary": 1.0
+      }
+    },
+    {
+      "finding_type": "false_negative_rate_failure",
+      "severity": "high",
+      "attribute": "gender",
+      "description": "False negative rate parity failed for 'gender'. FNR gap is 21.9%.",
+      "recommendation": "Some groups may be denied positive outcomes more often despite being truly eligible. Review feature quality, thresholding, and subgroup performance.",
+      "raw_data": {
+        "Female": 0.2188,
+        "Male": 0.1282,
+        "Non-binary": 0.0
+      }
+    },
+    {
+      "finding_type": "small_sample",
+      "severity": "low",
+      "attribute": "race",
+      "description": "Group 'Hispanic' in 'race' has only 24 samples. Fairness metrics for this subgroup may be unstable.",
+      "recommendation": "Interpret subgroup fairness results with caution. Collect more representative data for under-sampled groups.",
+      "raw_data": {
+        "group": "Hispanic",
+        "count": 24
+      }
+    },
+    {
+      "finding_type": "small_sample",
+      "severity": "medium",
+      "attribute": "race",
+      "description": "Group 'Black' in 'race' has only 16 samples. Fairness metrics for this subgroup may be unstable.",
+      "recommendation": "Interpret subgroup fairness results with caution. Collect more representative data for under-sampled groups.",
+      "raw_data": {
+        "group": "Black",
+        "count": 16
+      }
+    },
+    {
+      "finding_type": "small_sample",
+      "severity": "high",
+      "attribute": "race",
+      "description": "Group 'Asian' in 'race' has only 8 samples. Fairness metrics for this subgroup may be unstable.",
+      "recommendation": "Interpret subgroup fairness results with caution. Collect more representative data for under-sampled groups.",
+      "raw_data": {
+        "group": "Asian",
+        "count": 8
+      }
+    },
+    {
+      "finding_type": "representation",
+      "severity": "high",
+      "attribute": "race",
+      "description": "Group 'Asian' in 'race' is underrepresented: 8 samples (15.4% of the largest group).",
+      "recommendation": "Consider collecting more data for 'Asian' or applying rebalancing techniques. Under-representation can reduce model quality and fairness for minority groups.",
+      "raw_data": {
+        "group": "Asian",
+        "count": 8,
+        "ratio": 0.1538
+      }
+    },
+    {
+      "finding_type": "label_imbalance",
+      "severity": "critical",
+      "attribute": "race",
+      "description": "Positive outcome rates differ by 39.6% across 'race' groups.",
+      "recommendation": "Large outcome disparities may reflect historical discrimination or biased labels. Review whether the target variable is a fair proxy for the intended real-world outcome.",
+      "raw_data": {
+        "Asian": 0.5,
+        "Black": 0.4375,
+        "Hispanic": 0.8333,
+        "White": 0.8269
+      }
+    },
+    {
+      "finding_type": "demographic_parity_failure",
+      "severity": "high",
+      "attribute": "race",
+      "description": "Demographic parity failed for 'race'. Positive outcome rate gap is 39.6%.",
+      "recommendation": "Review decision thresholds, label generation, and subgroup representation to reduce outcome disparities.",
+      "raw_data": {
+        "Asian": 0.5,
+        "Black": 0.4375,
+        "Hispanic": 0.8333,
+        "White": 0.8269
+      }
+    },
+    {
+      "finding_type": "disparate_impact_failure",
+      "severity": "high",
+      "attribute": "race",
+      "description": "Disparate impact failed for 'race'. Impact ratio is 0.53, below the 0.80 threshold.",
+      "recommendation": "Investigate whether one group is receiving substantially fewer positive outcomes. Review selection criteria, thresholds, and historical training data.",
+      "raw_data": {
+        "Asian": 0.5,
+        "Black": 0.4375,
+        "Hispanic": 0.8333,
+        "White": 0.8269
+      }
+    },
+    {
+      "finding_type": "equal_opportunity_failure",
+      "severity": "medium",
+      "attribute": "race",
+      "description": "Equal opportunity failed for 'race'. True positive rate gap is 18.6%.",
+      "recommendation": "The model may correctly identify positive cases for some groups more than others. Review training balance, feature quality, and model thresholds.",
+      "raw_data": {
+        "Asian": 0.75,
+        "Black": 0.7143,
+        "Hispanic": 0.9,
+        "White": 0.8372
+      }
+    },
+    {
+      "finding_type": "false_negative_rate_failure",
+      "severity": "medium",
+      "attribute": "race",
+      "description": "False negative rate parity failed for 'race'. FNR gap is 18.6%.",
+      "recommendation": "Some groups may be denied positive outcomes more often despite being truly eligible. Review feature quality, thresholding, and subgroup performance.",
+      "raw_data": {
+        "Asian": 0.25,
+        "Black": 0.2857,
+        "Hispanic": 0.1,
+        "White": 0.1628
+      }
+    }
+  ]
+}

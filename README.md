@@ -1,211 +1,158 @@
-# 🚀 EquiLens AI — Unbiased AI Decision Auditor
+# 🚀 EquiLens AI — Enterprise Decision Auditor
 
-> **Detect. Explain. Fix Bias in AI Models — Automatically.**
+> **Empowering Trust in AI through Automated Fairness Auditing, Bias Detection, and Transparent Reporting.**
 
----
-
-## 🧠 What is EquiLens AI?
-
-**EquiLens AI** is a full-stack system that audits machine learning models for **bias, fairness, and reliability**.
-
-It helps you answer critical questions like:
-
-* Is my model biased against certain groups?
-* Are predictions fair across demographics?
-* What should I fix to improve fairness?
+[![Docker Support](https://img.shields.io/badge/Docker-Supported-blue.svg?logo=docker)](https://www.docker.com/)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688.svg?logo=fastapi)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/Frontend-React-61DAFB.svg?logo=react)](https://reactjs.org/)
 
 ---
 
-## Dashboard
-![image alt](https://github.com/Koreayush/Equilense_AI/blob/42ad0badd4042fd5e377431365c29c126169aed3/Dashboard.png)
+## 🧠 Project Overview
 
-## ⚡ Key Features
+**EquiLens AI** is a state-of-the-art full-stack platform designed to identify, quantify, and mitigate algorithmic bias in machine learning systems. By providing a multi-layered audit approach (Data + Model), it ensures that AI-driven decisions are fair, accountable, and ethically sound.
 
-### 🔍 Layer 1 — Data Fairness Audit
-
-* Detect bias in raw datasets
-* Analyze subgroup distributions
-* Identify risky features
-
-### 🤖 Layer 2 — Model Fairness Audit
-
-* Works with `.pkl`, `.joblib`, `.onnx` models
-* Evaluates:
-
-  * Accuracy & performance
-  * Subgroup performance
-  * Bias metrics:
-
-    * Demographic Parity
-    * Equal Opportunity
-    * Equalized Odds
-    * FPR / FNR gaps
-
-## Features 
-![image alt](https://github.com/Koreayush/Equilense_AI/blob/59903cdd70bfc63ed8fad1ce8d18a8edba8f4d27/feature1.jpeg)
-
-
-### 📊 Smart Reporting
-
-* Generates:
-
-  * JSON reports (machine-readable)
-  * PDF reports (human-friendly)
-* Chart-ready outputs for dashboards
-
-### ⚙️ Async Processing (Celery)
-
-* Background job execution
-* Scalable architecture
-
-## 📄 Sample Output
-
-📊 Want to see real bias detection report?
-
-👉 **[Click here to view the full audit report](model_audit_report.pdf)**
+### Core Objectives
+* **Bias Detection:** Uncover hidden disparities across demographic groups.
+* **Fairness Quantization:** Measure models against industry-standard fairness metrics.
+* **Regulatory Compliance:** Generate audit trails and PDF reports for legal and ethical verification.
+* **Actionable Insights:** Provide clear recommendations to technical teams for model refinement.
 
 ---
 
 ## 🏗️ System Architecture
 
-```
-Frontend (Nginx)
-       ↓
-FastAPI Backend (API Layer)
-       ↓
-Celery Worker (Async Tasks)
-       ↓
-Redis (Queue + Cache)
-       ↓
-PostgreSQL (Storage)
+EquiLens AI follows a modern microservices-inspired architecture designed for scalability and asynchronous processing.
+
+### High-Level Component Flow
+```mermaid
+graph TD
+    User((User/Auditor)) -->|Uploads CSV| Frontend[React Single Page Application]
+    Frontend -->|API Request| Nginx[Nginx Reverse Proxy]
+    Nginx -->|Routes Request| FastAPI[FastAPI Backend]
+    
+    subgraph "Backend Services"
+        FastAPI -->|Enqueue Task| Redis[(Redis Broker)]
+        Redis -->|Pulls Task| Workers[Celery Workers]
+        Workers -->|Bias Analysis| Engine[Fairness Engine]
+        Engine -->|Storage| Postgres[(PostgreSQL DB)]
+        Engine -->|PDF Generation| ReportGen[Report Generator]
+    end
+    
+    ReportGen -->|Save PDF/JSON| Storage[Local/Volume Storage]
+    FastAPI -->|Status Polling| Redis
 ```
 
 ---
 
-🐳 One-Click Demo 
+## 🔄 End-to-End Pipeline & Workflow
 
-🚀 Run Entire System
+The system operates on an automated pipeline that transforms raw data into comprehensive fairness reports.
+
+### 1. Ingestion Phase
+* **Endpoint:** `POST /api/v1/audit/run`
+* **Process:** The system accepts multipart form data including a CSV dataset and metadata (target column, sensitive attributes).
+* **Validation:** Schema validation ensures the presence of required columns and consistent label types.
+
+### 2. The Fairness Engine (Core Logic)
+The engine executes a battery of statistical tests:
+* **Representation Bias:** Checks for subgroup under-representation.
+* **Independence Check:** Evaluates **Demographic Parity** and **Disparate Impact**.
+* **Separation Check:** Measures **Equal Opportunity** (TPR Gap) and **Error Rate Parity** (FPR/FNR Gaps).
+* **Missingness Bias:** Detects if data is missing disproportionately for protected groups.
+
+### 3. Asynchronous Execution
+* Long-running audits are offloaded to **Celery workers** to ensure the API remains responsive.
+* Progress is tracked via a task ID stored in Redis.
+
+### 4. Reporting & Synthesis
+* Findings are synthesized into an **Overall Risk Score (0 to 1)**.
+* A human-readable **PDF Report** is generated using `ReportLab`, featuring executive summaries and deployment recommendations.
+* A machine-readable **JSON JSON** is stored for downstream integration.
+
+---
+
+## 📊 Dataset Requirements & Conditions
+
+To ensure accurate auditing, datasets must adhere to the following specifications:
+
+| Requirement | Specification |
+| :--- | :--- |
+| **File Format** | Standard CSV (Comma Separated) |
+| **Encoding** | UTF-8 |
+| **Columns** | Must include a **Target** (Ground Truth) and one or more **Sensitive** columns. |
+| **Labels** | Binary classification labels (e.g., 0/1, Yes/No, Approved/Denied). |
+| **Missing Values** | Handled by the engine, but extreme missingness (>20%) triggers warnings. |
+| **Sample Size** | Subgroups should ideally have >30 samples for statistically significant results. |
+
+---
+
+## 🛠️ ML Tools & Frameworks
+
+The auditing core leverages industry-standard Python libraries:
+
+* **Engine:** `Pandas` & `NumPy` for vectorized bias calculations.
+* **Modeling:** Support for `Scikit-learn` (.joblib/pickle) and `ONNX` runtime models.
+* **Audit Logic:** Custom implementation inspired by **Fairlearn** and **AIF360** methodologies.
+* **PDF Engine:** `ReportLab` for dynamic PDF document synthesis.
+* **Task Queue:** `Celery` + `Redis` for distributed task execution.
+
+---
+
+## 🚀 Environment Setup & Installation
+
+### 🐳 Option 1: Docker (Recommended)
+The fastest way to get EquiLens AI running is using Docker Compose.
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Koreayush/Equilense_AI.git
+   cd Equilense_AI
+   ```
+
+2. **Launch with Docker:**
+   ```bash
+   docker-compose up --build
+   ```
+
+3. **Access the platform:**
+   * **Frontend:** `http://localhost:80`
+   * **API Docs:** `http://localhost:8000/docs`
+
+### 🔧 Option 2: Local Manual Setup (Development)
+
+#### Backend Requirements
+* Python 3.10+
+* PostgreSQL & Redis running locally.
 
 ```bash
-git clone https://github.com/Koreayush/Equilense_AI.git
-cd Equilense_AI
-bash run-demo.sh
-bash run-demo.sh
+cd unbiased-ai/backend
+python -m venv venv
+source venv/bin/activate  # Or venv\Scripts\activate on Windows
+pip install -r requirements.txt
+uvicorn app.main:app --reload
 ```
 
-
-## 🐳 One-Command Setup (Docker)
-
-### 🔥 Run the entire system:
+#### Frontend Requirements
+* Node.js 18+
 
 ```bash
-docker-compose up --build
+cd unbiased-ai/frontend
+npm install
+npm run dev
 ```
 
 ---
 
-## 🌐 Access the App
+## 📄 License
 
-To open the app 
-
-app = https://equilense-ai.onrender.com
+This project is licensed under the Apache-2.0 License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 📂 Project Structure
+## 👨‍💻 Developed By
 
-```
-unbiased-ai/
-│
-├── backend/          # FastAPI + Celery
-├── frontend/         # Static UI (Nginx)
-├── infra/docker/     # Docker setup
-├── demo_output/      # Generated reports (ignored in prod)
-│
-└── docker-compose.yml
-```
-
----
-
-## 🧪 How to Use
-
-### 1. Upload Dataset
-
-* Run fairness audit on CSV
-
-### 2. Upload Model + Data
-
-* Perform full model audit
-
-### 3. Get Results
-
-* Bias insights
-* Fairness metrics
-* Recommendations
-
----
-
-## 📈 Example Outputs
-
-* ✔ Bias Detection Summary
-* ✔ Subgroup Performance Table
-* ✔ Fairness Scorecard
-* ✔ Actionable Recommendations
-
----
-
-## 💡 Why This Matters
-
-AI systems can unintentionally:
-
-* Discriminate
-* Reinforce inequality
-* Produce unfair outcomes
-
-**EquiLens AI ensures your models are trustworthy and responsible.**
-
----
-
-## 🛠️ Tech Stack
-
-* **Backend:** FastAPI, Celery
-* **Frontend:** HTML, JS, Nginx
-* **Queue:** Redis
-* **Database:** PostgreSQL
-* **Containerization:** Docker
-
----
-
-## 🚀 Future Improvements
-
-* Real-time dashboards
-* Model explainability (SHAP/LIME)
-* Bias mitigation suggestions
-* SaaS deployment
-
----
-
-## 👨‍💻 Team
-
-Built with ⚡ for hackathons & real-world AI fairness challenges.
-
----
-
-## 🏆 Demo Ready
-
-Run this and you're ready to present:
-
-```bash
-docker-compose up --build
-```
-
-Then open:
-👉 https://equilense-ai.onrender.com
-
----
-
-## 🔥 Final Note
+**Ayush Kore** & The EquiLens AI Team.
+Built for real-world impact in the field of Responsible AI.
 
 > “Don’t just build AI models. Build **fair** AI models.”
-
----

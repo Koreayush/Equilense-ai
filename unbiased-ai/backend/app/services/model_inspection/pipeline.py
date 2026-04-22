@@ -1,6 +1,7 @@
 import os
 import json
 from datetime import datetime
+from pathlib import Path
 
 import pandas as pd
 
@@ -16,14 +17,17 @@ from app.core.config import settings
 
 
 # ============================================================
-# REPORT OUTPUT CONFIG
-# ============================================================
+# Centralized reports directory
+def get_model_report_dir():
+    base_path = Path(settings.model_report_dir)
+    if not base_path.is_absolute():
+        # backend root is 4 levels up from this file
+        root = Path(__file__).resolve().parents[3]
+        base_path = root / base_path
+    base_path.mkdir(parents=True, exist_ok=True)
+    return str(base_path)
 
-REPORTS_DIR = settings.model_report_dir
-os.makedirs(REPORTS_DIR, exist_ok=True)
-
-# REPORTS_DIR = os.path.join("demo_output", "hackathon-demo", "model_audit_reports")
-# os.makedirs(REPORTS_DIR, exist_ok=True)
+REPORTS_DIR = get_model_report_dir()
 
 
 def run_model_audit_pipeline(
@@ -240,8 +244,8 @@ def _save_reports(result: dict) -> dict:
     )
 
     return {
-        "pdf": f"/reports/model_audit_reports/{pdf_filename}",
-        "json": f"/reports/model_audit_reports/{json_filename}",
+        "pdf": f"/reports/model/{pdf_filename}",
+        "json": f"/reports/model/{json_filename}",
     }
 
 

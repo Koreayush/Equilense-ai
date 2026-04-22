@@ -49,16 +49,17 @@ app.add_middleware(
 # BASE PATHS
 # ─────────────────────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent.parent
-REPORTS_DIR = BASE_DIR / "demo_output" / "hackathon-demo"
+REPORTS_ROOT = BASE_DIR / "storage" / "reports"
+REPORTS_ROOT.mkdir(parents=True, exist_ok=True)
 
-REPORTS_DIR.mkdir(parents=True, exist_ok=True)
+# Ensure subfolders exist
+(REPORTS_ROOT / "dataset").mkdir(exist_ok=True)
+(REPORTS_ROOT / "model").mkdir(exist_ok=True)
 
-logger.info(f"Reports directory mounted at: {REPORTS_DIR}")
-
-
+logger.info(f"Reports being served from: {REPORTS_ROOT}")
 
 # Mount reports as static downloadable files
-app.mount("/reports", StaticFiles(directory=str(REPORTS_DIR)), name="reports")
+app.mount("/reports", StaticFiles(directory=str(REPORTS_ROOT)), name="reports")
 
 
 
@@ -79,7 +80,7 @@ def health():
         "status": "ok",
         "app_name": settings.APP_NAME,
         "version": settings.APP_VERSION,
-        "reports_dir": str(REPORTS_DIR),
+        "reports_dir": str(REPORTS_ROOT),
     }
 
 

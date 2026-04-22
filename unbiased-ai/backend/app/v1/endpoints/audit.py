@@ -12,8 +12,10 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 # ── Reports Folder Setup ────────────────────────────────────────────────────
-BASE_DIR = Path(__file__).resolve().parents[3]   # backend/
-REPORT_DIR = BASE_DIR / "demo_output" / "hackathon-demo"
+from app.core.config import settings
+REPORT_DIR = Path(settings.audit_report_dir)
+if not REPORT_DIR.is_absolute():
+    REPORT_DIR = Path(__file__).resolve().parents[3] / REPORT_DIR
 REPORT_DIR.mkdir(parents=True, exist_ok=True)
 
 
@@ -97,8 +99,8 @@ async def run_audit(
 
         # ── Add report URLs for frontend ────────────────────────────────────
         result_dict["report_urls"] = {
-            "pdf": "/reports/report.pdf",
-            "json": "/reports/report.json"
+            "pdf": f"/reports/dataset/hackathon-demo/hackathon-demo_report.pdf",
+            "json": f"/reports/dataset/hackathon-demo/hackathon-demo_report.json"
         }
 
         return result_dict
