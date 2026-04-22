@@ -8,6 +8,14 @@
 
 ---
 
+🌐 Live Demo
+
+🔗 http://40.192.120.41
+
+Deployed on AWS ECS (Fargate) with containerized frontend & backend.
+
+---
+
 ## 🧠 Project Overview
 
 **EquiLens AI** is a state-of-the-art full-stack platform designed to identify, quantify, and mitigate algorithmic bias in machine learning systems. By providing a multi-layered audit approach (Data + Model), it ensures that AI-driven decisions are fair, accountable, and ethically sound.
