@@ -180,7 +180,7 @@ This project is licensed under the Apache-2.0 License - see the [LICENSE](LICENS
 
 ## 👨‍💻 Developed By
 
-**Ayush Kore** & The EquiLens AI Team.
+**Ayush Kore** & The AetherMind Labs.
 Built for real-world impact in the field of Responsible AI.
 
 > “Don’t just build AI models. Build **fair** AI models.”
